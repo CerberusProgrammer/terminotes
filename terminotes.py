@@ -1,19 +1,25 @@
 import sqlite3
 import argparse
+import os
+
+# Verificar si la base de datos existe, si no, crearla
+db_file = 'notes.db'
+db_exists = os.path.exists(db_file)
 
 # Conectar a la base de datos SQLite
-conn = sqlite3.connect('notes.db')
+conn = sqlite3.connect(db_file)
 c = conn.cursor()
 
 # Crear la tabla de notas si no existe
-c.execute('''
-CREATE TABLE IF NOT EXISTS notes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL
-)
-''')
-conn.commit()
+if not db_exists:
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL
+    )
+    ''')
+    conn.commit()
 
 def add_note(title, content):
     c.execute('INSERT INTO notes (title, content) VALUES (?, ?)', (title, content))
