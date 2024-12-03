@@ -1,6 +1,6 @@
 # Terminotes
 
-Terminotes is a simple note-taking application that runs in the terminal. It is written in Dart and uses the `dart:io` library to interact with the terminal.
+Terminotes is a simple note-taking application that runs in the terminal.
 
 ## Why Terminotes?
 
