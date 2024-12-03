@@ -56,7 +56,10 @@ def view_note(search_term):
         return
 
     def display_menu(stdscr):
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_RED) 
         curses.curs_set(0)
+        
         current_row = 0
 
         while True:
@@ -64,12 +67,15 @@ def view_note(search_term):
             h, w = stdscr.getmaxyx()
 
             for idx, note in enumerate(notes):
-                x = w//2 - len(note[0])//2
+                x = curses.LINES // 2
                 y = h//2 - len(notes)//2 + idx
                 if idx == current_row:
-                    stdscr.addstr(y, x, f'> {note[0]} ({note[1]}) - Created at: {note[2]}')
+                    stdscr.attron(curses.color_pair(1))
+                    stdscr.addstr(y, x, f'> {note[0]} - Created at: {note[2]}',
+                                  curses.A_REVERSE)
+                    stdscr.attroff(curses.color_pair(1))
                 else:
-                    stdscr.addstr(y, x, f'  {note[0]} ({note[1]}) - Created at: {note[2]}')
+                    stdscr.addstr(y, x, f'  {note[0]} - Created at: {note[2]}')
 
             stdscr.refresh()
 
@@ -78,10 +84,6 @@ def view_note(search_term):
             if key == curses.KEY_UP and current_row > 0:
                 current_row -= 1
             elif key == curses.KEY_DOWN and current_row < len(notes) - 1:
-                current_row += 1
-            elif key == ord('w') and current_row > 0:
-                current_row -= 1
-            elif key == ord('s') and current_row < len(notes) - 1:
                 current_row += 1
             elif key == curses.KEY_ENTER or key in [10, 13]:
                 return notes[current_row]
