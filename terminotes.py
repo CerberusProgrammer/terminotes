@@ -67,11 +67,9 @@ def view_note(search_term):
                 x = w//2 - len(note[0])//2
                 y = h//2 - len(notes)//2 + idx
                 if idx == current_row:
-                    stdscr.attron(curses.color_pair(1))
-                    stdscr.addstr(y, x, f'{note[0]} ({note[1]}) - Created at: {note[2]}')
-                    stdscr.attroff(curses.color_pair(1))
+                    stdscr.addstr(y, x, f'> {note[0]} ({note[1]}) - Created at: {note[2]}')
                 else:
-                    stdscr.addstr(y, x, f'{note[0]} ({note[1]}) - Created at: {note[2]}')
+                    stdscr.addstr(y, x, f'  {note[0]} ({note[1]}) - Created at: {note[2]}')
 
             stdscr.refresh()
 
@@ -81,11 +79,14 @@ def view_note(search_term):
                 current_row -= 1
             elif key == curses.KEY_DOWN and current_row < len(notes) - 1:
                 current_row += 1
+            elif key == ord('w') and current_row > 0:
+                current_row -= 1
+            elif key == ord('s') and current_row < len(notes) - 1:
+                current_row += 1
             elif key == curses.KEY_ENTER or key in [10, 13]:
                 return notes[current_row]
 
-    curses.wrapper(display_menu)
-    selected_note = display_menu(curses.initscr())
+    selected_note = curses.wrapper(display_menu)
     if selected_note:
         c.execute('SELECT content FROM notes WHERE uuid = ?', (selected_note[1],))
         note = c.fetchone()
